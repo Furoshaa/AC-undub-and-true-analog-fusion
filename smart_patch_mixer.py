@@ -89,7 +89,7 @@ def validate_patch_location(original_data, undub_data, true_analog_data, origina
         logging.error(f"Section content mismatch at 0x{original_offset:06X}")
         return False
     
-    logging.info(f"✓ Validated patch location 0x{undub_offset:06X}")
+    logging.info(f"OK: Validated patch location 0x{undub_offset:06X}")
     return True
 
 def apply_smart_patch():
@@ -184,7 +184,7 @@ def apply_smart_patch():
         # Apply the patch
         if undub_offset < len(mixed_data):
             mixed_data[undub_offset] = new_byte
-            logging.info(f"✓ Applied patch: 0x{original_offset:06X} -> 0x{undub_offset:06X}")
+            logging.info(f"APPLIED: Applied patch: 0x{original_offset:06X} -> 0x{undub_offset:06X}")
             successful_patches += 1
         else:
             logging.error(f"Offset 0x{undub_offset:06X} is out of bounds")
@@ -200,7 +200,7 @@ def apply_smart_patch():
     try:
         with open(mixed_path, 'wb') as f:
             f.write(mixed_data)
-        logging.info(f"✓ Mixed file saved: {mixed_path}")
+        logging.info(f"SAVED: Mixed file saved: {mixed_path}")
     except Exception as e:
         logging.error(f"Error saving mixed file: {e}")
         return False
@@ -213,9 +213,9 @@ def apply_smart_patch():
     logging.info(f"Success rate: {successful_patches/len(ta_diffs)*100:.1f}%")
     
     if failed_patches == 0:
-        logging.info("🎉 All patches applied successfully!")
+        logging.info("SUCCESS: All patches applied successfully!")
     else:
-        logging.warning(f"⚠ {failed_patches} patches failed. Check log for details.")
+        logging.warning(f"WARNING: {failed_patches} patches failed. Check log for details.")
     
     logging.info("=== Smart Patch Mixer Completed ===")
     return True

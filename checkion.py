@@ -109,13 +109,16 @@ def compare_files():
     print(f"Overlapping modifications: {len(overlaps)}")
     
     if len(overlaps) == 0:
-        print("✓ NO CONFLICTS! Both patches can be combined safely!")
+        print("OK: NO CONFLICTS! Both patches can be combined safely!")
     else:
-        print(f"⚠ WARNING: {len(overlaps)} conflicting locations found!")
+        print(f"WARNING: {len(overlaps)} conflicting locations found!")
         print("Manual resolution needed for conflicting bytes.")
     
     # Write True Analog differences to file
-    ta_output = os.path.join(base_path, 'true_analog_differences.txt')
+    checkion_folder = os.path.join(base_path, 'checkion')
+    os.makedirs(checkion_folder, exist_ok=True)
+    
+    ta_output = os.path.join(checkion_folder, 'true_analog_differences.txt')
     with open(ta_output, 'w') as f:
         f.write("TRUE ANALOG vs ORIGINAL DIFFERENCES\n")
         f.write("="*50 + "\n")
@@ -128,10 +131,10 @@ def compare_files():
             mod_char = chr(modified) if 32 <= modified <= 126 else '.'
             f.write(f"0x{offset:06X} |   0x{orig:02X}   |    0x{modified:02X}    | '{orig_char}' -> '{mod_char}'\n")
     
-    print(f"✓ True Analog differences saved to: {ta_output}")
+    print(f"OK: True Analog differences saved to: {ta_output}")
     
     # Write Undub differences to file
-    undub_output = os.path.join(base_path, 'undub_differences.txt')
+    undub_output = os.path.join(checkion_folder, 'undub_differences.txt')
     with open(undub_output, 'w') as f:
         f.write("UNDUB vs ORIGINAL DIFFERENCES\n")
         f.write("="*50 + "\n")
@@ -144,11 +147,11 @@ def compare_files():
             mod_char = chr(modified) if 32 <= modified <= 126 else '.'
             f.write(f"0x{offset:06X} |   0x{orig:02X}   | 0x{modified:02X}  | '{orig_char}' -> '{mod_char}'\n")
     
-    print(f"✓ Undub differences saved to: {undub_output}")
+    print(f"OK: Undub differences saved to: {undub_output}")
     
     # Write overlap analysis
     if overlaps:
-        overlap_output = os.path.join(base_path, 'conflicts.txt')
+        overlap_output = os.path.join(checkion_folder, 'conflicts.txt')
         with open(overlap_output, 'w') as f:
             f.write("CONFLICTING LOCATIONS\n")
             f.write("="*50 + "\n")
@@ -167,17 +170,17 @@ def compare_files():
                 
                 f.write(f"0x{offset:06X} |   0x{orig_byte:02X}   |    0x{ta_byte:02X}     | 0x{undub_byte:02X}  | {same}\n")
         
-        print(f"✓ Conflict analysis saved to: {overlap_output}")
+        print(f"OK: Conflict analysis saved to: {overlap_output}")
         
         # Count real conflicts (where both patches want different values)
         real_conflicts = sum(1 for offset in overlaps 
                            if ta_dict[offset] != undub_dict[offset])
         
         if real_conflicts == 0:
-            print("✓ Good news: All overlapping changes are identical!")
+            print("OK: Good news: All overlapping changes are identical!")
             print("  Both patches can be applied together without issues.")
         else:
-            print(f"⚠ {real_conflicts} real conflicts need manual resolution!")
+            print(f"WARNING: {real_conflicts} real conflicts need manual resolution!")
     
     # Generate combined file if no real conflicts
     if len(overlaps) == 0 or (overlaps and sum(1 for offset in overlaps 
@@ -204,11 +207,11 @@ def compare_files():
         with open(combined_path, 'wb') as f:
             f.write(combined)
         
-        print(f"✓ Combined file saved as: {combined_path}")
+        print(f"SAVED: Combined file saved as: {combined_path}")
         print("  This file should work with both patches applied!")
     else:
         print("\nSkipping combined file generation due to conflicts.")
-        print("Check conflicts.txt for manual resolution guidance.")
+        print("Check checkion/conflicts.txt for manual resolution guidance.")
 
 if __name__ == "__main__":
     compare_files()
