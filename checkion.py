@@ -1,21 +1,66 @@
 #!/usr/bin/env python3
 """
-FDAT.T File Comparison Tool for Armored Core PSX
+File Comparison Tool for ROM Patches
 Simple comparison to identify patch conflicts and generate diff files
+Works with any file in the original/true analog/undub folders
 """
 
 import os
 
+def find_file_in_folder(folder_path):
+    """Find the first file in a folder (ignoring directories) and ensure only one file exists"""
+    if not os.path.exists(folder_path):
+        return None, None, "Folder does not exist"
+    
+    files = []
+    for item in os.listdir(folder_path):
+        item_path = os.path.join(folder_path, item)
+        if os.path.isfile(item_path):
+            files.append((item_path, item))
+    
+    if len(files) == 0:
+        return None, None, "No files found"
+    elif len(files) > 1:
+        file_list = ", ".join([f[1] for f in files])
+        return None, None, f"Multiple files found: {file_list}. Please ensure only one file per folder."
+    else:
+        return files[0][0], files[0][1], None
+
 def compare_files():
     base_path = os.path.dirname(os.path.abspath(__file__))
     
-    # File paths
-    original_path = os.path.join(base_path, 'original', 'FDAT.T')
-    true_analog_path = os.path.join(base_path, 'true analog', 'FDAT.T')
-    undub_path = os.path.join(base_path, 'undub', 'FDAT.T')
+    # Check if mixed folder is empty
+    mixed_folder = os.path.join(base_path, 'mixed')
+    if os.path.exists(mixed_folder):
+        mixed_files = [f for f in os.listdir(mixed_folder) if os.path.isfile(os.path.join(mixed_folder, f))]
+        if mixed_files:
+            print(f"Error: Mixed folder is not empty. Found files: {', '.join(mixed_files)}")
+            print("Please remove files from the mixed folder before running.")
+            return
+    
+    # Find files in each folder
+    original_path, original_filename, error = find_file_in_folder(os.path.join(base_path, 'original'))
+    if error:
+        print(f"Error in 'original' folder: {error}")
+        return
+    
+    true_analog_path, true_analog_filename, error = find_file_in_folder(os.path.join(base_path, 'true analog'))
+    if error:
+        print(f"Error in 'true analog' folder: {error}")
+        return
+    
+    undub_path, undub_filename, error = find_file_in_folder(os.path.join(base_path, 'undub'))
+    if error:
+        print(f"Error in 'undub' folder: {error}")
+        return
+    
+    print(f"Found files:")
+    print(f"  Original: {original_filename}")
+    print(f"  True Analog: {true_analog_filename}")
+    print(f"  Undub: {undub_filename}")
     
     # Load files
-    print("Loading files...")
+    print("\nLoading files...")
     try:
         with open(original_path, 'rb') as f:
             original = f.read()
@@ -150,7 +195,12 @@ def compare_files():
             if offset < len(combined):
                 combined[offset] = modified
         
-        combined_path = os.path.join(base_path, 'FDAT_combined.T')
+        # Create mixed folder if it doesn't exist
+        if not os.path.exists(mixed_folder):
+            os.makedirs(mixed_folder)
+        
+        # Save with original filename in mixed folder
+        combined_path = os.path.join(mixed_folder, original_filename)
         with open(combined_path, 'wb') as f:
             f.write(combined)
         
