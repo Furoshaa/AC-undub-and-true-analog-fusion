@@ -11,7 +11,11 @@ from datetime import datetime
 
 def setup_logging():
     """Setup logging to both console and file"""
-    log_filename = f"patch_mixer_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+    # Create log folder if it doesn't exist
+    log_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
+    os.makedirs(log_folder, exist_ok=True)
+    
+    log_filename = os.path.join(log_folder, f"patch_mixer_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log")
     
     logging.basicConfig(
         level=logging.INFO,

@@ -1,2 +1,5 @@
 # Analysis output files
 # undub_differences.txt - now tracked with Git LFS
+
+# Log files
+logs/*
