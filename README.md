@@ -1,5 +1,14 @@
 # Armored Core PS1 - Undub + True Analog Patch Fusion
 
+## ⚠️ Important Credits
+
+**I have not created the undub patches nor the true analogs patches. I just found a way to make them both work on a single ROM.**
+
+- **Credit for the undub patches goes to "swosho"**
+- **Credit for the true analogs patch goes to "VanLaser"**
+
+---
+
 I wanted to be able to have Armored Core on PS1 with the undub patch as well as the true analogs patch. Though I have no knowledge of reverse engineering or ROM modding or whatever, but I know how to use Python and AI. So I made this to help me understand the structural difference between patched versions of the game compared to the normal version of it so that I could just use hexadecimal code of the files to manually mix them.
 
 ## Patches
