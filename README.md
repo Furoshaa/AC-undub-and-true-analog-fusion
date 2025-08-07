@@ -22,7 +22,7 @@ To use with the USA version (SLUS-01030)
 5. Armored Core - Master of Arena (Disc 2) (Undub + True-Analogs) patch.xdelta
 Same thing, just use it with the USA version (SLUS-01081)
 
-If anaything is wrong just create an issue and i'll answer it asaic
+If anything is wrong just create an issue and I'll answer it ASAP
 
 
 ## What This Does
@@ -31,7 +31,7 @@ Basically I compare a normal version of the game with the undub version and the 
 
 ## Current Status
 
-Right now I'm working on making a Python file capable of doing this on its own because it's tedious so it probably could be used for other games as well or whatever. This file is done and should be working fine but somhow isn't so use at your own risk. The patches are already made anyway and are ready to use.
+Right now I'm working on making a Python file capable of doing this on its own because it's tedious so it probably could be used for other games as well or whatever. This file is done and should be working fine but somehow isn't, so use at your own risk. The patches are already made anyway and are ready to use.
 
 At some point maybe I'll make a guide on how to use this and make it work yourself but I'm too lazy yet.
 
@@ -39,14 +39,53 @@ At some point maybe I'll make a guide on how to use this and make it work yourse
 
 - `checkion.py` - Compare all 3 files and mix them if there is no conflict
 - Analysis output files .txt (tracked with Git LFS due to size) in the checkion folder
-- `smart_patch_mixer.py` - In theory this python file is smart enough to understand the true-analogs patches changes compare to the original and apply them to the undub by changing the offset to match the place where the true-analogs patch SHOULD be applied and output the file in the mixed folder. In theory it works but for some reason that i dont know, i doesn't. I used it on the FDAT.T file of one of the game and when i recompiled the game it didn't work. I tried this many times and it never worked even tho the hexa code looked fine so idk.
-- `logs` when using the smart_patch_mixer.py it will output a log file to tell you basically everything it did.
+- `smart_patch_mixer.py` - In theory this python file is smart enough to understand the true-analogs patches changes compared to the original and apply them to the undub by changing the offset to match the place where the true-analogs patch SHOULD be applied and output the file in the mixed folder. In theory it works but for some reason that I don't know, it doesn't. I used it on the FDAT.T file of one of the games and when I recompiled the game it didn't work. I tried this many times and it never worked even though the hex code looked fine so I don't know why.
+- `logs/` - When using the smart_patch_mixer.py it will output a log file to tell you basically everything it did.
 
 ## How It Works
 
 1. Analyzes the file from three versions (original, undub, true analogs)
-2. Identifies conflicts between patches using hexadecimal comparison.
-3. Output a text file for the differences between original and undub.
-4. Output a text file for the differences between original and true analogs.
-5. Output a text file with the conflicts between the 2 if there is.
-6. If no conflicts, will output a file that combines both patches.
+2. Identifies conflicts between patches using hexadecimal comparison
+3. Outputs a text file for the differences between original and undub
+4. Outputs a text file for the differences between original and true analogs
+5. Outputs a text file with the conflicts between the 2 patches if there are any
+6. If no conflicts, will output a file that combines both patches
+
+## Quick Start
+
+### Using the Pre-made Patches (Recommended)
+1. Download the appropriate `.xdelta` patch from the Patches folder or releases
+2. Use xdelta to apply the patch to your ROM
+3. Enjoy your undubbed game with true analog support!
+
+### Using the Python Tools (For Development/Research)
+**Note**: The Python tools work with extracted files, not ROM files directly.
+
+1. **Extract ROMs using CDMage B5**: Extract all your ROM versions (original, undub, true analog)
+2. **Locate FDAT.T files**: From each extracted ROM, navigate to `/GG/COM/` and copy the `FDAT.T` file
+3. **Place FDAT.T files in appropriate folders**:
+   - `original/` - FDAT.T from your original ROM
+   - `undub/` - FDAT.T from your undubbed ROM  
+   - `true analog/` - FDAT.T from your true analog patched ROM
+4. Run `python checkion.py` to analyze differences and conflicts
+5. Check the `checkion/` folder for detailed analysis files
+6. If no conflicts, find your combined FDAT.T file in the `mixed/` folder
+7. **Rebuild ROM using CDMage B5**: Replace the original `FDAT.T` in your ROM with the patched version
+
+## Requirements
+
+- Python 3.x (for development tools only)
+- xdelta (for applying patches)
+- CDMage B5 (for ROM extraction/rebuilding when using Python tools)
+- Original Armored Core ROM files (BIN/CUE format)
+
+## Folder Structure
+```
+├── original/         # Place FDAT.T files from original ROMs here
+├── undub/            # Place FDAT.T files from undub patched ROMs here  
+├── true analog/      # Place FDAT.T files from true analog patched ROMs here
+├── mixed/            # Combined FDAT.T output files appear here
+├── checkion/         # Analysis output files
+├── logs/             # Smart patch mixer logs
+└── Patches/          # Ready-to-use xdelta patches (apply to ROM files directly)
+```
